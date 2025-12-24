@@ -96,38 +96,31 @@
         <div class="space-y-4 mb-6">
           <div>
             <label class="block text-lg font-medium mb-2"
-              >Маршрут 1 - км:</label
+              >Маршрут 1 - км (автоматично):</label
             >
             <input
               type="number"
               id="route-km1"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateRouteTotal()"
+              readonly
+              class="w-full text-xl p-3 border-2 border-gray-300 bg-gray-50 rounded-lg font-bold"
             />
           </div>
 
           <div>
             <label class="block text-lg font-medium mb-2"
-              >Маршрут 2 - км:</label
+              >Маршрут 2 - км (автоматично):</label
             >
             <input
               type="number"
               id="route-km2"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateRouteTotal()"
+              readonly
+              class="w-full text-xl p-3 border-2 border-gray-300 bg-gray-50 rounded-lg font-bold"
             />
           </div>
 
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Маршрут 3 - км:</label
-            >
-            <input
-              type="number"
-              id="route-km3"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateRouteTotal()"
-            />
+          <div class="text-sm text-gray-600">
+            Автоматично: <strong>Маршрут 1 = Изминати км / 2</strong> и
+            <strong>Маршрут 2 = Изминати км / 2</strong>.
           </div>
 
           <div>

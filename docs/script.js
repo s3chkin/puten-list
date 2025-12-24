@@ -10,16 +10,18 @@ function calculateDistance() {
     distanceInput.value = distance > 0 ? Math.round(distance) : "";
   }
 
+  // Auto-calculate routes from distance
+  updateRoutesFromDistance();
+
   // Recalculate fuel if distance changes
   calculateFuel();
 }
 
 // Calculate route total kilometers
 function calculateRouteTotal() {
-  const km1 = parseFloat(document.getElementById("route-km1").value) || 0;
-  const km2 = parseFloat(document.getElementById("route-km2").value) || 0;
-  const km3 = parseFloat(document.getElementById("route-km3").value) || 0;
-  const total = km1 + km2 + km3;
+  const km1 = parseFloat(document.getElementById("route-km1")?.value) || 0;
+  const km2 = parseFloat(document.getElementById("route-km2")?.value) || 0;
+  const total = km1 + km2;
 
   const routeTotal = document.getElementById("route-total");
   if (routeTotal) {
@@ -28,6 +30,31 @@ function calculateRouteTotal() {
 
   // Recalculate fuel
   calculateFuel();
+}
+
+// Auto-calculate route 1 and 2 from total distance (split by 2)
+function updateRoutesFromDistance() {
+  const distance =
+    parseFloat(document.getElementById("distance-traveled")?.value) || 0;
+
+  const r1 = document.getElementById("route-km1");
+  const r2 = document.getElementById("route-km2");
+  const rt = document.getElementById("route-total");
+
+  if (!r1 || !r2 || !rt) return;
+
+  if (distance > 0) {
+    // Keep integers and preserve sum even for odd distances
+    const half1 = Math.floor(distance / 2);
+    const half2 = distance - half1;
+    r1.value = String(half1);
+    r2.value = String(half2);
+    rt.value = String(distance);
+  } else {
+    r1.value = "";
+    r2.value = "";
+    rt.value = "";
+  }
 }
 
 // Calculate fuel consumption
@@ -135,7 +162,7 @@ function loadData() {
 
     // Recalculate all fields
     calculateDistance();
-    calculateRouteTotal();
+    updateRoutesFromDistance();
     calculateFuel();
   }
 }

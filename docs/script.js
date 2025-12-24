@@ -92,6 +92,12 @@ function calculateEconomy() {
   const quantityInput = document.getElementById("fuel-quantity");
   const remainderInput = document.getElementById("fuel-remainder");
   const economyInput = document.getElementById("fuel-economy");
+  const expectedConsumptionInput = document.getElementById(
+    "fuel-expected-consumption"
+  );
+  const actualConsumptionInput = document.getElementById("fuel-actual-consumption");
+  const rateInput = document.getElementById("fuel-consumption-rate");
+  const motoHoursInput = document.getElementById("moto-hours");
 
   const quantity = parseFloat(quantityInput?.value) || 0;
   const remainder = parseFloat(remainderInput?.value) || 0;
@@ -102,21 +108,37 @@ function calculateEconomy() {
     parseFloat(document.getElementById("route-total").value) ||
     0;
 
-  if (distance > 0 && quantity > 0 && remainder >= 0) {
-    const standardConsumptionPer100km = 10;
-    // Очакван разход = Изминати км × 10 литра / 100 км
-    const expectedConsumption = (distance / 100) * standardConsumptionPer100km;
+  // Норма (л/100км) — по подразбиране 11
+  const ratePer100km = parseFloat(rateInput?.value) || 11;
+  // Моточасове — по подразбиране 0
+  const motoHours = parseFloat(motoHoursInput?.value) || 0;
+  // 1 моточас = 3л
+  const motoConsumption = motoHours * 3;
 
-    // Реален разход = Количество - Остатък (реално измерен)
+  // Очакван разход = (км/100 * норма) + (моточасове * 3л)
+  const expectedConsumption = (distance / 100) * ratePer100km + motoConsumption;
+  if (expectedConsumptionInput) {
+    expectedConsumptionInput.value =
+      expectedConsumption > 0 ? (Math.round(expectedConsumption * 10) / 10).toFixed(1) : "";
+  }
+
+  // Реален разход = Количество - Остатък (реално измерен) — само ако е въведен остатък
+  const hasRemainder = remainderInput && remainderInput.value !== "";
+  if (hasRemainder && quantity > 0) {
     const actualConsumption = quantity - remainder;
+    if (actualConsumptionInput) {
+      actualConsumptionInput.value = (Math.round(actualConsumption * 10) / 10).toFixed(1);
+    }
 
-    // Икономия = Очакван разход - Реален разход
+    // Икономия = Очакван разход - Реален разход (може да е отрицателна)
     const economyValue = expectedConsumption - actualConsumption;
-
     if (economyInput) {
       economyInput.value = (Math.round(economyValue * 10) / 10).toFixed(1);
     }
   } else {
+    if (actualConsumptionInput) {
+      actualConsumptionInput.value = "";
+    }
     if (economyInput) {
       economyInput.value = "";
     }

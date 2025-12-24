@@ -142,6 +142,38 @@
 
         <div class="space-y-4">
           <div>
+            <label class="block text-lg font-medium mb-2"
+              >Норма разход (л/100км):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-consumption-rate"
+              value="11"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateFuel()"
+            />
+            <p class="text-xs text-gray-600 mt-1">
+              По подразбиране: <strong>11 л/100км</strong>
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2">Моточасове:</label>
+            <input
+              type="number"
+              step="0.1"
+              id="moto-hours"
+              value="0"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateFuel()"
+            />
+            <p class="text-xs text-gray-600 mt-1">
+              1 моточас = <strong>3 л</strong> разход
+            </p>
+          </div>
+
+          <div>
             <label class="block text-lg font-medium mb-2">Наличност (л):</label>
             <input
               type="number"
@@ -193,6 +225,19 @@
 
           <div>
             <label class="block text-lg font-medium mb-2"
+              >Очакван разход (автоматично):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-expected-consumption"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
               >Остатък (попълва се ръчно):</label
             >
             <input
@@ -201,6 +246,19 @@
               id="fuel-remainder"
               class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
               onchange="calculateEconomy()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Разход (реален, автоматично):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-actual-consumption"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
             />
           </div>
 
@@ -229,11 +287,17 @@
               <strong>Остатък</strong> = попълва се ръчно (реално измерен)
             </li>
             <li>
-              <strong>Икономия</strong> = (Очакван разход) - (Реален разход)
+              <strong>Очакван разход</strong> = (км/100 × норма) + (моточасове ×
+              3л)
+            </li>
+            <li>
+              <strong>Разход (реален)</strong> = Количество - Остатък
+            </li>
+            <li>
+              <strong>Икономия</strong> = Очакван разход - Разход (реален)
             </li>
             <li class="text-xs text-gray-600 mt-2">
-              Реален разход = Количество - Остатък<br />
-              Очакван разход = Изминати км × 0.1 л/км
+              Пример: 11л/100км и 1 моточас = 3л
             </li>
           </ul>
         </div>

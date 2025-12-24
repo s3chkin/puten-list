@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Пътен Лист</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @media print {
+        .no-print {
+          display: none;
+        }
+        body {
+          background: white;
+        }
+      }
+      @media (max-width: 640px) {
+        input {
+          font-size: 16px;
+        }
+      }
+      button {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen py-4">
+    <div class="max-w-2xl mx-auto px-4">
+      <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">
+        ПЪТЕН ЛИСТ
+      </h1>
+
+      <!-- Front Page - Километраж -->
+      <div
+        id="front-page"
+        class="bg-white shadow-lg rounded-lg p-6 mb-4 print:shadow-none"
+      >
+        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
+          Километраж
+        </h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Начален километраж:</label
+            >
+            <input
+              type="number"
+              id="odometer-start"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateDistance()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Краен километраж:</label
+            >
+            <input
+              type="number"
+              id="odometer-end"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateDistance()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Изминати км (автоматично):</label
+            >
+            <input
+              type="number"
+              id="distance-traveled"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Back Page - Маршрут и Гориво -->
+      <div
+        id="back-page"
+        class="bg-white shadow-lg rounded-lg p-6 mb-4 print:shadow-none"
+      >
+        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
+          Маршрут
+        </h2>
+
+        <div class="space-y-4 mb-6">
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Маршрут 1 - км:</label
+            >
+            <input
+              type="number"
+              id="route-km1"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateRouteTotal()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Маршрут 2 - км:</label
+            >
+            <input
+              type="number"
+              id="route-km2"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateRouteTotal()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Маршрут 3 - км:</label
+            >
+            <input
+              type="number"
+              id="route-km3"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateRouteTotal()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Общо км (автоматично):</label
+            >
+            <input
+              type="number"
+              id="route-total"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+            />
+          </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
+          Гориво
+        </h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-lg font-medium mb-2">Наличност (л):</label>
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-available"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateFuel()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Доливано 1 (л):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-filled1"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateFuel()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Доливано 2 (л):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-filled2"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateFuel()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Количество (автоматично):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-quantity"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Остатък (попълва се ръчно):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-remainder"
+              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+              onchange="calculateEconomy()"
+            />
+          </div>
+
+          <div>
+            <label class="block text-lg font-medium mb-2"
+              >Икономия (автоматично):</label
+            >
+            <input
+              type="number"
+              step="0.1"
+              id="fuel-economy"
+              readonly
+              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+            />
+          </div>
+        </div>
+
+        <!-- Обяснение на изчисленията -->
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm">
+          <h3 class="font-semibold mb-2">Как се изчисляват стойностите:</h3>
+          <ul class="space-y-1 text-gray-700">
+            <li>
+              <strong>Количество</strong> = Наличност + Доливано 1 + Доливано 2
+            </li>
+            <li>
+              <strong>Остатък</strong> = попълва се ръчно (реално измерен)
+            </li>
+            <li>
+              <strong>Икономия</strong> = (Очакван разход) - (Реален разход)
+            </li>
+            <li class="text-xs text-gray-600 mt-2">
+              Реален разход = Количество - Остатък<br />
+              Очакван разход = Изминати км × 0.1 л/км
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="no-print flex gap-3 justify-center mb-4">
+        <button
+          onclick="clearForm()"
+          class="px-6 py-3 bg-red-600 text-white rounded-lg font-semibold shadow-lg text-lg"
+        >
+          Изчисти
+        </button>
+        <button
+          onclick="saveData()"
+          class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-lg text-lg"
+        >
+          Запази
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

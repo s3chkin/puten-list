@@ -142,82 +142,158 @@
 
         <div class="space-y-4">
           <div>
-            <label class="block text-lg font-medium mb-2"
-              >Норма разход (л/100км):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-consumption-rate"
-              value="11"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateFuel()"
-            />
-            <p class="text-xs text-gray-600 mt-1">
-              По подразбиране: <strong>11 л/100км</strong>
+            <div class="grid grid-cols-1 gap-3">
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <p class="text-sm text-gray-700">
+                  <strong>Норма разход гориво:</strong> 11 литра на 100 км
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-sm font-medium mb-1"
+                    >Начален километраж:</label
+                  >
+                  <input
+                    type="number"
+                    id="fuel-odometer-start"
+                    readonly
+                    class="w-full text-lg p-2 border-2 border-gray-300 bg-gray-50 rounded-lg font-semibold"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1"
+                    >Краен километраж:</label
+                  >
+                  <input
+                    type="number"
+                    id="fuel-odometer-end"
+                    readonly
+                    class="w-full text-lg p-2 border-2 border-gray-300 bg-gray-50 rounded-lg font-semibold"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1"
+                    >Изминати километри:</label
+                  >
+                  <input
+                    type="number"
+                    id="fuel-distance-km"
+                    readonly
+                    class="w-full text-lg p-2 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-lg font-medium mb-2"
+                  >Изразходено гориво (литри):</label
+                >
+                <input
+                  type="number"
+                  step="0.1"
+                  id="fuel-used-liters"
+                  readonly
+                  class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+                />
+              </div>
+
+              <div>
+                <label class="block text-lg font-medium mb-2"
+                  >Остатък от преден ден (литри):</label
+                >
+                <input
+                  type="number"
+                  step="0.1"
+                  id="fuel-prev-remainder"
+                  class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+                  onchange="recalculateAll()"
+                />
+              </div>
+
+              <div>
+                <label class="block text-lg font-medium mb-2"
+                  >Заредено гориво (литри):</label
+                >
+                <input
+                  type="number"
+                  step="0.1"
+                  id="fuel-refueled"
+                  class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+                  onchange="recalculateAll()"
+                />
+              </div>
+
+              <div>
+                <label class="block text-lg font-medium mb-2"
+                  >Наличност накрая (литри):</label
+                >
+                <input
+                  type="number"
+                  step="0.1"
+                  id="fuel-end-availability"
+                  readonly
+                  class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
+                />
+                <p
+                  id="fuel-error"
+                  class="hidden mt-2 text-sm font-semibold text-red-700"
+                >
+                  Грешка: наличността накрая не може да бъде отрицателна. Проверете
+                  въведените стойности.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <h2 class="text-xl font-semibold mt-8 mb-4 border-b-2 border-gray-400 pb-2">
+          Масло
+        </h2>
+
+        <div class="space-y-4">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+            <p class="text-sm text-gray-700">
+              <strong>Норма разход масло:</strong> 3 литра на 1 моточас
             </p>
           </div>
 
-          <div>
-            <label class="block text-lg font-medium mb-2">Моточасове:</label>
-            <input
-              type="number"
-              step="0.1"
-              id="moto-hours"
-              value="0"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateFuel()"
-            />
-            <p class="text-xs text-gray-600 mt-1">
-              1 моточас = <strong>3 л</strong> разход
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2">Наличност (л):</label>
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-available"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateFuel()"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Доливано 1 (л):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-filled1"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateFuel()"
-            />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-lg font-medium mb-2"
+                >Начален моточас:</label
+              >
+              <input
+                type="number"
+                step="0.1"
+                id="moto-hour-start"
+                class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+                onchange="recalculateAll()"
+              />
+            </div>
+            <div>
+              <label class="block text-lg font-medium mb-2"
+                >Краен моточас:</label
+              >
+              <input
+                type="number"
+                step="0.1"
+                id="moto-hour-end"
+                class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
+                onchange="recalculateAll()"
+              />
+            </div>
           </div>
 
           <div>
             <label class="block text-lg font-medium mb-2"
-              >Доливано 2 (л):</label
+              >Изразходвани моточасове:</label
             >
             <input
               type="number"
               step="0.1"
-              id="fuel-filled2"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateFuel()"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Количество (автоматично):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-quantity"
+              id="moto-hours-used"
               readonly
               class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
             />
@@ -225,51 +301,12 @@
 
           <div>
             <label class="block text-lg font-medium mb-2"
-              >Очакван разход (автоматично):</label
+              >Изразходено масло (литри):</label
             >
             <input
               type="number"
               step="0.1"
-              id="fuel-expected-consumption"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Остатък (попълва се ръчно):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-remainder"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateEconomy()"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Разход (реален, автоматично):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-actual-consumption"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Икономия (автоматично):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="fuel-economy"
+              id="oil-used-liters"
               readonly
               class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
             />
@@ -281,23 +318,26 @@
           <h3 class="font-semibold mb-2">Как се изчисляват стойностите:</h3>
           <ul class="space-y-1 text-gray-700">
             <li>
-              <strong>Количество</strong> = Наличност + Доливано 1 + Доливано 2
+              <strong>Изминати километри</strong> = краен километраж − начален
+              километраж
             </li>
             <li>
-              <strong>Остатък</strong> = попълва се ръчно (реално измерен)
+              <strong>Изразходено гориво (литри)</strong> = (изминати км / 100) ×
+              11
             </li>
             <li>
-              <strong>Очакван разход</strong> = (км/100 × норма) + (моточасове ×
-              3л)
+              <strong>Наличност накрая (литри)</strong> = остатък от преден ден +
+              заредено гориво − изразходено гориво
             </li>
             <li>
-              <strong>Разход (реален)</strong> = Количество - Остатък
+              <strong>Моточасове</strong> = краен моточас − начален моточас
             </li>
             <li>
-              <strong>Икономия</strong> = Очакван разход - Разход (реален)
+              <strong>Изразходено масло (литри)</strong> = моточасове × 3
             </li>
             <li class="text-xs text-gray-600 mt-2">
-              Пример: 11л/100км и 1 моточас = 3л
+              Нормите са постоянни: <strong>11 л/100км</strong> и
+              <strong>3 л/моточас</strong>.
             </li>
           </ul>
         </div>

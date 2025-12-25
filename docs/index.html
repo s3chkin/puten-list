@@ -30,330 +30,212 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen py-4">
+  <body class="bg-gray-100 min-h-screen py-4 font-sans text-gray-900">
     <div class="max-w-2xl mx-auto px-4">
-      <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">
-        ПЪТЕН ЛИСТ
+      <h1
+        class="text-3xl font-black text-center mb-6 text-blue-800 uppercase tracking-tighter"
+      >
+        Пътен Лист
       </h1>
 
-      <!-- Front Page - Километраж -->
+      <!-- Движение -->
       <div
-        id="front-page"
-        class="bg-white shadow-lg rounded-lg p-6 mb-4 print:shadow-none"
+        class="bg-white shadow-xl rounded-2xl p-6 mb-4 border border-gray-200"
       >
-        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
-          Километраж
+        <h2
+          class="text-xl font-bold mb-4 border-b-2 border-blue-100 pb-2 text-blue-700 flex items-center"
+        >
+          <span class="mr-2">🚗</span> Движение
         </h2>
-
-        <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-lg font-medium mb-2"
-              >Начален километраж:</label
+            <label class="block text-sm font-bold mb-1 text-gray-600"
+              >Начален км:</label
             >
             <input
               type="number"
-              id="odometer-start"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateDistance()"
+              id="odo-start"
+              class="w-full text-xl p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-all"
+              oninput="calculate()"
             />
           </div>
-
           <div>
-            <label class="block text-lg font-medium mb-2"
-              >Краен километраж:</label
+            <label class="block text-sm font-bold mb-1 text-gray-600"
+              >Краен км:</label
             >
             <input
               type="number"
-              id="odometer-end"
-              class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-              onchange="calculateDistance()"
+              id="odo-end"
+              class="w-full text-xl p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-all"
+              oninput="calculate()"
             />
           </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Изминати км (автоматично):</label
-            >
-            <input
-              type="number"
-              id="distance-traveled"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
+        </div>
+        <div class="pt-2 border-t border-gray-100">
+          <div class="text-blue-800 flex justify-between items-center">
+            <span class="text-sm font-black uppercase">Общо изминати км:</span>
+            <span id="res-distance" class="text-3xl font-black italic">0</span>
           </div>
         </div>
       </div>
 
-      <!-- Back Page - Маршрут и Гориво -->
+      <!-- Маршрут (Автоматично) -->
       <div
-        id="back-page"
-        class="bg-white shadow-lg rounded-lg p-6 mb-4 print:shadow-none"
+        class="bg-white shadow-xl rounded-2xl p-6 mb-4 border border-gray-200"
       >
-        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
-          Маршрут
+        <h2
+          class="text-xl font-bold mb-4 border-b-2 border-blue-100 pb-2 text-blue-700 flex items-center"
+        >
+          <span class="mr-2">🗺️</span> Маршрут (Автоматично)
         </h2>
-
-        <div class="space-y-4 mb-6">
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Маршрут 1 - км (автоматично):</label
+        <div class="space-y-3">
+          <div
+            class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100"
+          >
+            <span class="font-bold text-gray-600">Маршрут 1 (км):</span>
+            <span id="res-route-1" class="text-xl font-black text-gray-800"
+              >0</span
             >
-            <input
-              type="number"
-              id="route-km1"
-              readonly
-              class="w-full text-xl p-3 border-2 border-gray-300 bg-gray-50 rounded-lg font-bold"
-            />
           </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Маршрут 2 - км (автоматично):</label
+          <div
+            class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100"
+          >
+            <span class="font-bold text-gray-600">Маршрут 2 (км):</span>
+            <span id="res-route-2" class="text-xl font-black text-gray-800"
+              >0</span
             >
-            <input
-              type="number"
-              id="route-km2"
-              readonly
-              class="w-full text-xl p-3 border-2 border-gray-300 bg-gray-50 rounded-lg font-bold"
-            />
           </div>
-
-          <div class="text-sm text-gray-600">
-            Автоматично: <strong>Маршрут 1 = Изминати км / 2</strong> и
-            <strong>Маршрут 2 = Изминати км / 2</strong>.
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Общо км (автоматично):</label
-            >
-            <input
-              type="number"
-              id="route-total"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
-          </div>
-        </div>
-
-        <h2 class="text-xl font-semibold mb-4 border-b-2 border-gray-400 pb-2">
-          Гориво
-        </h2>
-
-        <div class="space-y-4">
-          <div>
-            <div class="grid grid-cols-1 gap-3">
-              <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                <p class="text-sm text-gray-700">
-                  <strong>Норма разход гориво:</strong> 11 литра на 100 км
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label class="block text-sm font-medium mb-1"
-                    >Начален километраж:</label
-                  >
-                  <input
-                    type="number"
-                    id="fuel-odometer-start"
-                    readonly
-                    class="w-full text-lg p-2 border-2 border-gray-300 bg-gray-50 rounded-lg font-semibold"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1"
-                    >Краен километраж:</label
-                  >
-                  <input
-                    type="number"
-                    id="fuel-odometer-end"
-                    readonly
-                    class="w-full text-lg p-2 border-2 border-gray-300 bg-gray-50 rounded-lg font-semibold"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1"
-                    >Изминати километри:</label
-                  >
-                  <input
-                    type="number"
-                    id="fuel-distance-km"
-                    readonly
-                    class="w-full text-lg p-2 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-lg font-medium mb-2"
-                  >Изразходено гориво (литри):</label
-                >
-                <input
-                  type="number"
-                  step="0.1"
-                  id="fuel-used-liters"
-                  readonly
-                  class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-                />
-              </div>
-
-              <div>
-                <label class="block text-lg font-medium mb-2"
-                  >Остатък от преден ден (литри):</label
-                >
-                <input
-                  type="number"
-                  step="0.1"
-                  id="fuel-prev-remainder"
-                  class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-                  onchange="recalculateAll()"
-                />
-              </div>
-
-              <div>
-                <label class="block text-lg font-medium mb-2"
-                  >Заредено гориво (литри):</label
-                >
-                <input
-                  type="number"
-                  step="0.1"
-                  id="fuel-refueled"
-                  class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-                  onchange="recalculateAll()"
-                />
-              </div>
-
-              <div>
-                <label class="block text-lg font-medium mb-2"
-                  >Наличност накрая (литри):</label
-                >
-                <input
-                  type="number"
-                  step="0.1"
-                  id="fuel-end-availability"
-                  readonly
-                  class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-                />
-                <p
-                  id="fuel-error"
-                  class="hidden mt-2 text-sm font-semibold text-red-700"
-                >
-                  Грешка: наличността накрая не може да бъде отрицателна. Проверете
-                  въведените стойности.
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <h2 class="text-xl font-semibold mt-8 mb-4 border-b-2 border-gray-400 pb-2">
-          Масло
-        </h2>
-
-        <div class="space-y-4">
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-            <p class="text-sm text-gray-700">
-              <strong>Норма разход масло:</strong> 3 литра на 1 моточас
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-lg font-medium mb-2"
-                >Начален моточас:</label
-              >
-              <input
-                type="number"
-                step="0.1"
-                id="moto-hour-start"
-                class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-                onchange="recalculateAll()"
-              />
-            </div>
-            <div>
-              <label class="block text-lg font-medium mb-2"
-                >Краен моточас:</label
-              >
-              <input
-                type="number"
-                step="0.1"
-                id="moto-hour-end"
-                class="w-full text-xl p-3 border-2 border-gray-400 rounded-lg"
-                onchange="recalculateAll()"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Изразходвани моточасове:</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="moto-hours-used"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
-          </div>
-
-          <div>
-            <label class="block text-lg font-medium mb-2"
-              >Изразходено масло (литри):</label
-            >
-            <input
-              type="number"
-              step="0.1"
-              id="oil-used-liters"
-              readonly
-              class="w-full text-xl p-3 border-2 border-blue-600 bg-blue-50 rounded-lg font-bold"
-            />
-          </div>
-        </div>
-
-        <!-- Обяснение на изчисленията -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg text-sm">
-          <h3 class="font-semibold mb-2">Как се изчисляват стойностите:</h3>
-          <ul class="space-y-1 text-gray-700">
-            <li>
-              <strong>Изминати километри</strong> = краен километраж − начален
-              километраж
-            </li>
-            <li>
-              <strong>Изразходено гориво (литри)</strong> = (изминати км / 100) ×
-              11
-            </li>
-            <li>
-              <strong>Наличност накрая (литри)</strong> = остатък от преден ден +
-              заредено гориво − изразходено гориво
-            </li>
-            <li>
-              <strong>Моточасове</strong> = краен моточас − начален моточас
-            </li>
-            <li>
-              <strong>Изразходено масло (литри)</strong> = моточасове × 3
-            </li>
-            <li class="text-xs text-gray-600 mt-2">
-              Нормите са постоянни: <strong>11 л/100км</strong> и
-              <strong>3 л/моточас</strong>.
-            </li>
-          </ul>
+          <p
+            class="text-[10px] text-gray-400 text-center uppercase font-bold tracking-widest"
+          >
+            Изчислява се: Общо км / 2
+          </p>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="no-print flex gap-3 justify-center mb-4">
+      <!-- Гориво -->
+      <div
+        class="bg-white shadow-xl rounded-2xl p-6 mb-4 border border-gray-200"
+      >
+        <h2
+          class="text-xl font-bold mb-4 border-b-2 border-blue-100 pb-2 text-blue-700 flex items-center"
+        >
+          <span class="mr-2">⛽</span> Гориво и Масло
+        </h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-bold mb-1 text-gray-600"
+              >Наличност (от преден ден):</label
+            >
+            <input
+              type="number"
+              id="fuel-init"
+              class="w-full text-xl p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+              oninput="calculate()"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold mb-1 text-gray-600"
+                >Доливано 1:</label
+              >
+              <input
+                type="number"
+                id="fuel-added-1"
+                class="w-full text-xl p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                oninput="calculate()"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-1 text-gray-600"
+                >Доливано 2:</label
+              >
+              <input
+                type="number"
+                id="fuel-added-2"
+                class="w-full text-xl p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                oninput="calculate()"
+              />
+            </div>
+          </div>
+
+          <div class="pt-4 border-t-2 border-gray-50 space-y-3">
+            <!-- Всичко -->
+            <div
+              class="flex justify-between items-center bg-gray-100 p-4 rounded-xl"
+            >
+              <span class="font-black text-gray-700 uppercase text-sm"
+                >Всичко:</span
+              >
+              <span
+                id="res-total-label"
+                class="text-2xl font-black text-gray-900"
+                >0 (0)</span
+              >
+            </div>
+
+            <!-- Разход (Норма) -->
+            <div
+              class="flex justify-between items-center bg-blue-50 p-4 rounded-xl border-l-8 border-blue-500"
+            >
+              <div>
+                <span class="font-black text-blue-800 uppercase text-sm block"
+                  >Разход (Норма):</span
+                >
+                <span
+                  id="res-expenditure-detail"
+                  class="text-[10px] font-bold text-blue-400 uppercase tracking-tight"
+                  >0 (км) + 3 (мото)</span
+                >
+              </div>
+              <span
+                id="res-expenditure"
+                class="text-2xl font-black text-blue-900 text-right"
+                >0 л.</span
+              >
+            </div>
+
+            <!-- Остатък (ВХОД) -->
+            <div>
+              <label
+                class="block text-sm font-black mb-1 text-orange-700 uppercase tracking-wider"
+                >Остатък (Въведете ръчно):</label
+              >
+              <input
+                type="number"
+                id="fuel-remainder-input"
+                class="w-full text-3xl p-4 border-4 border-orange-400 rounded-2xl bg-orange-50 font-black focus:border-orange-600 focus:outline-none text-orange-900 shadow-inner"
+                oninput="calculate()"
+              />
+            </div>
+
+            <!-- Икономия (АВТО) -->
+            <div
+              class="flex justify-between items-center bg-green-100 p-4 rounded-xl border-l-8 border-green-500 shadow-lg"
+            >
+              <span class="font-black text-green-800 uppercase text-sm"
+                >Икономия:</span
+              >
+              <span id="res-economy" class="text-3xl font-black text-green-900"
+                >0 л.</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Бутони -->
+      <div class="no-print flex gap-4 justify-center mb-10">
         <button
           onclick="clearForm()"
-          class="px-6 py-3 bg-red-600 text-white rounded-lg font-semibold shadow-lg text-lg"
+          class="flex-1 px-6 py-4 bg-gray-400 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl hover:bg-gray-500 active:scale-95 transition-all"
         >
           Изчисти
         </button>
         <button
           onclick="saveData()"
-          class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-lg text-lg"
+          class="flex-1 px-6 py-4 bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl hover:bg-blue-800 active:scale-95 transition-all"
         >
           Запази
         </button>

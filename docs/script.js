@@ -1,183 +1,82 @@
-const FUEL_NORM_L_PER_100KM = 11;
-const OIL_NORM_L_PER_MOTO_HOUR = 3;
+function calculate() {
+  // 1. Вземане на входните данни
+  const odoStart = parseFloat(document.getElementById("odo-start").value) || 0;
+  const odoEnd = parseFloat(document.getElementById("odo-end").value) || 0;
+  
+  const fuelInit = parseFloat(document.getElementById("fuel-init").value) || 0;
+  const fuelAdded1 = parseFloat(document.getElementById("fuel-added-1").value) || 0;
+  const fuelAdded2 = parseFloat(document.getElementById("fuel-added-2").value) || 0;
+  const fuelRemainder = parseFloat(document.getElementById("fuel-remainder-input").value) || 0;
 
-// Calculate distance traveled
-function calculateDistance() {
-  const start =
-    parseFloat(document.getElementById("odometer-start").value) || 0;
-  const end = parseFloat(document.getElementById("odometer-end").value) || 0;
-  const distance = end - start;
+  // 2. Изчисления за разстояние
+  const distance = Math.max(0, odoEnd - odoStart);
+  
+  // 3. Маршрути (Делене на 2)
+  const route1 = Math.floor(distance / 2);
+  const route2 = distance - route1;
 
-  const distanceInput = document.getElementById("distance-traveled");
-  if (distanceInput) {
-    distanceInput.value = distance > 0 ? Math.round(distance) : "";
+  // 4. Нормативен разход (Разход)
+  // Твърда норма 11/100 + 3л за моточас (винаги 3л според указанията)
+  const kmPart = Math.round((distance / 100) * 11);
+  const motoPart = 3; // ВИНАГИ 3л за работа
+  const normExpenditure = kmPart + motoPart;
+
+  // 5. Количества гориво
+  const physicalFuel = fuelInit + fuelAdded1 + fuelAdded2; // Реално налично
+
+  // 6. Икономия (Автоматично изчисляване)
+  // Икономия = Нормативен разход - Реален разход
+  // Реален разход = Налично - Остатък
+  let economy = 0;
+  if (document.getElementById("fuel-remainder-input").value !== "") {
+    const realExpenditure = physicalFuel - fuelRemainder;
+    economy = normExpenditure - realExpenditure;
   }
 
-  // Auto-calculate routes from distance
-  updateRoutesFromDistance();
+  // 7. Отчетно количество (това, което е в скобите)
+  const accountingFuel = physicalFuel + economy;
 
-  recalculateAll();
+  // 8. Показване на резултатите в UI
+  document.getElementById("res-distance").textContent = distance;
+  document.getElementById("res-route-1").textContent = route1;
+  document.getElementById("res-route-2").textContent = route2;
+  
+  document.getElementById("res-total-label").textContent = `${physicalFuel} (${accountingFuel})`;
+  
+  document.getElementById("res-expenditure-detail").textContent = `${kmPart} (км) + ${motoPart} (мото)`;
+  document.getElementById("res-expenditure").textContent = `${normExpenditure} л.`;
+  
+  document.getElementById("res-economy").textContent = `${economy} л.`;
 }
 
-// Calculate route total kilometers
-function calculateRouteTotal() {
-  const km1 = parseFloat(document.getElementById("route-km1")?.value) || 0;
-  const km2 = parseFloat(document.getElementById("route-km2")?.value) || 0;
-  const total = km1 + km2;
-
-  const routeTotal = document.getElementById("route-total");
-  if (routeTotal) {
-    routeTotal.value = total > 0 ? Math.round(total) : "";
-  }
-
-  // Recalculate fuel
-  calculateFuel();
-}
-
-// Auto-calculate route 1 and 2 from total distance (split by 2)
-function updateRoutesFromDistance() {
-  const distance =
-    parseFloat(document.getElementById("distance-traveled")?.value) || 0;
-
-  const r1 = document.getElementById("route-km1");
-  const r2 = document.getElementById("route-km2");
-  const rt = document.getElementById("route-total");
-
-  if (!r1 || !r2 || !rt) return;
-
-  if (distance > 0) {
-    // Keep integers and preserve sum even for odd distances
-    const half1 = Math.floor(distance / 2);
-    const half2 = distance - half1;
-    r1.value = String(half1);
-    r2.value = String(half2);
-    rt.value = String(distance);
-  } else {
-    r1.value = "";
-    r2.value = "";
-    rt.value = "";
-  }
-}
-
-// Calculate fuel consumption
-function calculateFuel() {
-  // Sync odometer values for the fuel section
-  const odometerStart = parseFloat(document.getElementById("odometer-start")?.value) || 0;
-  const odometerEnd = parseFloat(document.getElementById("odometer-end")?.value) || 0;
-  const distanceKm = Math.max(0, odometerEnd - odometerStart);
-
-  const fuelOdoStart = document.getElementById("fuel-odometer-start");
-  const fuelOdoEnd = document.getElementById("fuel-odometer-end");
-  const fuelDistance = document.getElementById("fuel-distance-km");
-  if (fuelOdoStart) fuelOdoStart.value = odometerStart ? String(odometerStart) : "";
-  if (fuelOdoEnd) fuelOdoEnd.value = odometerEnd ? String(odometerEnd) : "";
-  if (fuelDistance) fuelDistance.value = distanceKm ? String(Math.round(distanceKm)) : "";
-
-  // Fuel used: (km/100)*11
-  const fuelUsed = (distanceKm / 100) * FUEL_NORM_L_PER_100KM;
-  const fuelUsedInput = document.getElementById("fuel-used-liters");
-  if (fuelUsedInput) {
-    fuelUsedInput.value = distanceKm ? (Math.round(fuelUsed * 10) / 10).toFixed(1) : "";
-  }
-
-  // End availability: prev remainder + refueled - fuel used
-  const prevRemainder = parseFloat(document.getElementById("fuel-prev-remainder")?.value) || 0;
-  const refueled = parseFloat(document.getElementById("fuel-refueled")?.value) || 0;
-  const endAvailability = prevRemainder + refueled - fuelUsed;
-
-  const endAvailabilityInput = document.getElementById("fuel-end-availability");
-  const fuelError = document.getElementById("fuel-error");
-
-  if (endAvailabilityInput) {
-    if (distanceKm > 0 || prevRemainder > 0 || refueled > 0) {
-      if (endAvailability < 0) {
-        endAvailabilityInput.value = "";
-        endAvailabilityInput.classList.remove("border-blue-600", "bg-blue-50");
-        endAvailabilityInput.classList.add("border-red-600", "bg-red-50");
-        if (fuelError) fuelError.classList.remove("hidden");
-      } else {
-        endAvailabilityInput.value = (Math.round(endAvailability * 10) / 10).toFixed(1);
-        endAvailabilityInput.classList.remove("border-red-600", "bg-red-50");
-        endAvailabilityInput.classList.add("border-blue-600", "bg-blue-50");
-        if (fuelError) fuelError.classList.add("hidden");
-      }
-    } else {
-      endAvailabilityInput.value = "";
-      endAvailabilityInput.classList.remove("border-red-600", "bg-red-50");
-      endAvailabilityInput.classList.add("border-blue-600", "bg-blue-50");
-      if (fuelError) fuelError.classList.add("hidden");
-    }
-  }
-}
-
-function calculateOil() {
-  const start = parseFloat(document.getElementById("moto-hour-start")?.value) || 0;
-  const end = parseFloat(document.getElementById("moto-hour-end")?.value) || 0;
-  const motoHours = end - start;
-
-  const motoHoursUsedInput = document.getElementById("moto-hours-used");
-  const oilUsedInput = document.getElementById("oil-used-liters");
-
-  if (motoHoursUsedInput) {
-    motoHoursUsedInput.value = motoHours > 0 ? (Math.round(motoHours * 10) / 10).toFixed(1) : "";
-  }
-
-  const oilUsed = Math.max(0, motoHours) * OIL_NORM_L_PER_MOTO_HOUR;
-  if (oilUsedInput) {
-    oilUsedInput.value = motoHours > 0 ? (Math.round(oilUsed * 10) / 10).toFixed(1) : "";
-  }
-}
-
-function recalculateAll() {
-  calculateFuel();
-  calculateOil();
-}
-
-// Clear all form fields
 function clearForm() {
-  if (confirm("Сигурни ли сте, че искате да изчистите всички данни?")) {
-    const inputs = document.querySelectorAll('input[type="number"]');
-    inputs.forEach((input) => {
-      input.value = "";
-    });
+  if (confirm("Сигурни ли сте, че искате да изчистите всичко?")) {
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => input.value = "");
+    calculate();
   }
 }
 
-// Save data to localStorage
 function saveData() {
   const formData = {};
-  const inputs = document.querySelectorAll('input[type="number"]');
-
-  inputs.forEach((input) => {
-    if (input.id) {
-      formData[input.id] = input.value;
-    }
+  document.querySelectorAll('input').forEach(input => {
+    formData[input.id] = input.value;
   });
-
-  localStorage.setItem("putenListData", JSON.stringify(formData));
-  alert("Данните са запазени успешно!");
+  localStorage.setItem('putenListV3', JSON.stringify(formData));
+  alert('Данните са запазени!');
 }
 
-// Load data from localStorage
 function loadData() {
-  const savedData = localStorage.getItem("putenListData");
-  if (savedData) {
-    const formData = JSON.parse(savedData);
-    Object.keys(formData).forEach((id) => {
+  const data = localStorage.getItem('putenListV3');
+  if (data) {
+    const formData = JSON.parse(data);
+    Object.keys(formData).forEach(id => {
       const input = document.getElementById(id);
-      if (input) {
-        input.value = formData[id];
-      }
+      if (input) input.value = formData[id];
     });
-
-    // Recalculate all fields
-    calculateDistance();
-    updateRoutesFromDistance();
-    recalculateAll();
+    calculate();
   }
 }
 
-// Auto-load saved data on page load
-document.addEventListener("DOMContentLoaded", function () {
-  loadData();
-});
+// Зареждане при старт
+window.onload = loadData;

@@ -9,7 +9,9 @@ function calculate() {
   const fuelRemainder = parseFloat(document.getElementById("fuel-remainder-input").value) || 0;
 
   // 2. Изчисления за разстояние
-  const distance = Math.max(0, odoEnd - odoStart);
+  // Абсолютна стойност: работи и ако полетата са разменени, без минуси.
+  // Ако някое поле е празно, показва 0.
+  const distance = odoStart && odoEnd ? Math.abs(odoEnd - odoStart) : 0;
   
   // 3. Маршрути (Делене на 2)
   const route1 = Math.floor(distance / 2);
